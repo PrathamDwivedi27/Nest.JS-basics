@@ -11,13 +11,16 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserType } from 'src/users/dtos/CreateUser.dto';
+import { UsersService } from 'src/users/services/users/users.service';
 // import { Request, Response } from 'express';
 
 @Controller('users')
 export class UsersController {
+  constructor(private userService: UsersService) {}
+
   @Get()
   getUsers() {
-    return [{ username: 'John Doe', email: 'john@gmailto.com' }];
+    return this.userService.fetchUsers();
   }
 
   @Get('posts')
@@ -43,7 +46,7 @@ export class UsersController {
   @UsePipes(new ValidationPipe())
   createUser(@Body() userData: CreateUserType) {
     console.log(userData);
-    return {};
+    return this.userService.createUser(userData);
   }
 
   @Get(':id')
